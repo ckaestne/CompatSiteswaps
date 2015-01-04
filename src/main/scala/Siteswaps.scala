@@ -33,7 +33,7 @@ object Siteswaps {
     var r = 0
     var m = 1
     for (v <- seq.reverse) {
-      r += m * (v-1)
+      r += m * (v - 1)
       m *= 10
     }
     r
@@ -52,7 +52,7 @@ object Siteswaps {
     //no passing? seriously
     if (!(seq contains 5) && !(seq contains 7) && !(seq contains 9)) return true
     //flip-flip is boring
-    if ((toLocal(seq)++toLocal(seq)) containsSlice List(4, 4)) return true
+    if ((toLocal(seq) ++ toLocal(seq)) containsSlice List(4, 4)) return true
     false
   }
 
@@ -119,11 +119,11 @@ object Siteswaps {
         case 0 => "0,0,0"
         case 2 => "1,0,1"
         case 4 => "2,0,2"
-        case 5 => "2.5,1,"+((seq.length+1)/2+2)
+        case 5 => "2.5,1," + ((seq.length + 1) / 2 + 2)
         case 6 => "3,0,3"
-        case 7 => "3.5,1,"+((seq.length+1)/2+3)
+        case 7 => "3.5,1," + ((seq.length + 1) / 2 + 3)
         case 8 => "4,0,4"
-        case 9 => "4.5,1,"+((seq.length+1)/2+4)
+        case 9 => "4.5,1," + ((seq.length + 1) / 2 + 4)
         case 10 => "5,0,5"
       }).map("p(" + _ + ")").mkString(",") + "]&persons=2"
 
@@ -162,9 +162,6 @@ object NamedSiteswaps {
       |77772 Martin's one count (async)
       |77722 parsnip
       |77222 inverted parsnip
-      |86425 *
-      |84562 *
-      |88522 *
       |77466666 Jim's 3 count (async)
       |77466 Jim's 2 count (async)
       |774 Jim's 1 count (async)
@@ -205,6 +202,7 @@ object NamedSiteswaps {
       |767872782 self centered
       |7747746677466 Jim's ppsps (async)
       |8686777 Vitoria
+      |7742744 flipalot
     """.stripMargin
 
   def parse(line: String): (List[Int], String) = {
@@ -236,8 +234,8 @@ object SiteswapTests extends App {
   checkSiteswap(8, 6, 8, 6, 7)
   checkSiteswap(7, 2, 2, 2, 2)
   invalidSiteswap(5, 8)
-  assert(isBoring(List(6,4,6,4,5)))
-  assert(!isBoring(List(9,5,8,4,4)))
+  assert(isBoring(List(6, 4, 6, 4, 5)))
+  assert(!isBoring(List(9, 5, 8, 4, 4)))
 
 
   def mkname(s: List[Int]) =
@@ -245,22 +243,29 @@ object SiteswapTests extends App {
 
   var out = new FileWriter("csw.html")
 
+  //sort interfaces, first by length, then by number of passes, and finally alphabetically
+  def sortInterfaces(a: (String, Any), b: (String, Any)): Boolean = {
+    if (a._1.length != b._1.length) return a._1.length > b._1.length
+    if (a._1.toCharArray.filter(_ == 'p').length != b._1.toCharArray.filter(_ == 'p').length) return a._1.toCharArray.filter(_ == 'p').length > b._1.toCharArray.filter(_ == 'p').length
+    a._1 > b._1
+  }
+
   def run(len: Int) {
     val sw = findSiteswaps(len)
-    for ((interface, sws) <- sw.groupBy(getNormalizedInterface).toList.sortBy(_._1.reverse).reverse) {
+    for ((interface, sws) <- sw.groupBy(getNormalizedInterface).toList.sortWith(sortInterfaces).reverse) {
       println("\n" + interface)
       for (s <- sws.toList.sortBy(siteswapToInt).sortBy(numberOfObjects))
         println("%s\t\t%s\t\t%s\t\t%s".format(printSiteswap(s), siteswapToPrechac(s), new DecimalFormat("#.#").format(numberOfObjects(s).toFloat / 2.0), mkname(s)))
     }
   }
 
-//  run(3)
-//  run(5)
-//  run(7)
+  //  run(3)
+  //  run(5)
+  //  run(7)
 
 
   def genClassTags(s: List[Int]): String = {
-    var tags:List[String] = List("sw")
+    var tags: List[String] = List("sw")
 
     if (s contains 2) tags ::= "h2"
     if (s contains 4) tags ::= "h4"
@@ -270,14 +275,14 @@ object SiteswapTests extends App {
     if (s contains 8) tags ::= "h8"
     if (s contains 9) tags ::= "h9"
     if (s contains 10) tags ::= "ha"
-    if (toLocal(s) containsSlice List(9,5)) tags ::= "dr"
+    if (toLocal(s) containsSlice List(9, 5)) tags ::= "dr"
 
     tags.mkString(" ")
   }
 
   def genHtml(len: Int): NodeSeq = {
     val sw = findSiteswaps(len)
-    (for ((interface, sws) <- sw.groupBy(getNormalizedInterface).toList.sortBy(_._1.reverse).reverse) yield {
+    (for ((interface, sws) <- sw.groupBy(getNormalizedInterface).toList.sortWith(sortInterfaces).reverse) yield {
       val h = <h2>{interface}</h2>
       h ++ <p>{(for (s <- sws.toList.sortBy(siteswapToInt).sortBy(numberOfObjects)) yield
         <div class={genClassTags(s)}><span><a href={toPrechacThisLink(s)}>{printSiteswap(s)}</a></span> <span class="num">{new DecimalFormat("#.#").format(numberOfObjects(s).toFloat / 2.0)}</span> <span>{mkname(s)}</span></div>)}</p>
@@ -291,12 +296,4 @@ object SiteswapTests extends App {
   )
 
 
-
-  //    .map(s=>println(printSiteswap(s)+ "   "+printSiteswap(toLocal(s))+"   "+numberOfObjects(s)+"   "+"   "+lookupName(s).getOrElse("")))
-
-
 }
-
-//object Main extends App {
-//
-//}
