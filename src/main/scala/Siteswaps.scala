@@ -3,7 +3,8 @@ package siteswap
 import java.io.FileWriter
 import java.text.DecimalFormat
 
-import scala.xml.NodeSeq
+import scala.xml._
+import scala.xml.dtd.{PublicID, DocType}
 
 
 object Siteswaps {
@@ -215,7 +216,7 @@ object NamedSiteswaps {
   def lookupName(seq: List[Int]) = namedSiteswaps.get(normalizeSiteswap(seq))
 }
 
-object SiteswapTests extends App {
+class SiteswapTests extends App {
 
   import Siteswaps._
   import NamedSiteswaps._
@@ -228,6 +229,7 @@ object SiteswapTests extends App {
     assert(!isSiteswap(a.toList), "%s is a valid siteswap".format(a.mkString("")))
   }
 
+  //simple tests
   checkSiteswap(3)
   checkSiteswap(3, 4, 2)
   checkSiteswap(9, 7, 5)
@@ -237,11 +239,17 @@ object SiteswapTests extends App {
   assert(isBoring(List(6, 4, 6, 4, 5)))
   assert(!isBoring(List(9, 5, 8, 4, 4)))
 
+}
+
+object SiteswapGenerator extends App {
+
+  import Siteswaps._
+  import NamedSiteswaps._
+
+
 
   def mkname(s: List[Int]) =
-    lookupName(s). /*map(_+"; ").*/ getOrElse("") //+toText(s)
-
-  var out = new FileWriter("csw.html")
+    lookupName(s).getOrElse("")
 
   //sort interfaces, first by length, then by number of passes, and finally alphabetically
   def sortInterfaces(a: (String, Any), b: (String, Any)): Boolean = {
@@ -289,11 +297,22 @@ object SiteswapTests extends App {
     }).flatten
   }
 
-  scala.xml.XML.save("csw.html",
-    <div>
-      {genHtml(3) ++ genHtml(5) ++ genHtml(7)}
-    </div>
-  )
+
+  def replace(xml: Node)(p: Node => Boolean)(elem: Node): Node = xml match {
+    case x: Node if p(x) => elem
+    case Elem(prefix, label, attribs, scope,  child @ _*) =>
+      Elem(prefix, label, attribs, scope, true,  child.map(replace(_)(p)(elem)): _*)
+    case x: Node => x
+  }
+
+  val template = scala.xml.XML.loadFile("siteswaps_template.xhtml")
+  val generated = <div>
+    {genHtml(3) ++ genHtml(5) ++ genHtml(7)}
+  </div>
+
+  val output = replace(template)(_.label == "siteswaps")(generated)
+
+  scala.xml.XML.save("siteswaps.xhtml", output, "UTF-8", true, DocType("html", PublicID("-//W3C//DTD XHTML 1.0 Strict//EN", "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"), Nil))
 
 
 }
