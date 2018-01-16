@@ -135,83 +135,14 @@ object NamedSiteswaps {
 
   import Siteswaps._
 
-  val data =
-    """
-      |645 killer bunny
-      |744 5 club one count
-      |726 5 club one count
-      |726 coconut laden swallow
-      |942 glass elevator
-      |867 French 3 count
-      |966 7 club three count
-      |756 baby dragon; zap opus 1; holy hand-grenade
-      |945 dragon; black beast of aaaarg...
-      |996 8 club pps
-      |7 7 club one count
-      |777 7 club one count
-      |77777 7 club one count
-      |7777777 7 club one count
-      |9 9 club one count
-      |999 9 club one count
-      |99999 9 club one count
-      |9999999 9 club one count
-      |975 holy grail; zap opus two
-      |64645 zap intro
-      |86227 5 club why not
-      |86722 5 club not why
-      |86867 5 count popcorn (44)
-      |77772 Martin's one count (async)
-      |77722 parsnip
-      |77222 inverted parsnip
-      |77466666 Jim's 3 count (async)
-      |77466 Jim's 2 count (async)
-      |774 Jim's 1 count (async)
-      |7777266 mild madness (async)
-      |77862 why not
-      |77286 not why
-      |78672 maybe
-      |96672 not likely
-      |79662 maybe not
-      |77786 funky bookends
-      |522 zap zip zip
-      |552 zap zap zip
-      |852 heff zip zap
-      |825 heff zap zip
-      |855 heff zap zap
-      |885 heff heff zap
-      |7a666 5 count popcorn
-      |966a666 7 count popcorn (variation)
-      |9668686 7 count popcorn (variation)
-      |7a66686 7 count popcorn (variation)
-      |786a666 7 count popcorn (variation)
-      |7868686 7 count popcorn
-      |9669964 7 club Jim's 2 count
-      |9968926 7 club why not
-      |9788926 7 club why not (variation)
-      |9689962 7 club not why
-      |9689782 7 club not why (variation)
-      |7889962 7 club not why (variation)
-      |7889782 7 club not why (variation)
-      |9969268 7 club maybe (1)
-      |9968296 7 club maybe (2)
-      |9968278 7 club maybe (variation)
-      |9669968926 why rei
-      |9964786 7 club Jim's 2 count (variation)
-      |9784966 7 club Jim's 2 count (variation)
-      |9784786 7 club Jim's 2 count (variation)
-      |b64 odd scots
-      |767872782 self centered
-      |7747746677466 Jim's ppsps (async)
-      |8686777 Vitoria
-      |7742744 flipalot
-    """.stripMargin
+  val data = io.Source.fromFile("named-siteswaps.txt").getLines()
 
   def parse(line: String): (List[Int], String) = {
     val (sw, text) = line.splitAt(line.indexOf(" "))
     (normalizeSiteswap(sw.map(c => if (c == 'a') 10 else c.asDigit).toList), text.trim)
   }
 
-  val namedSiteswaps = data.lines.filterNot(_.trim.isEmpty).map(parse).toMap
+  val namedSiteswaps = data.filterNot(_.trim.isEmpty).map(parse).toMap
 
   def lookupName(seq: List[Int]) = namedSiteswaps.get(normalizeSiteswap(seq))
 }
@@ -292,8 +223,8 @@ object SiteswapGenerator extends App {
     val sw = findSiteswaps(len)
     (for ((interface, sws) <- sw.groupBy(getNormalizedInterface).toList.sortWith(sortInterfaces).reverse) yield {
       val h = <h2>{interface}</h2>
-      h ++ <p>{(for (s <- sws.toList.sortBy(siteswapToInt).sortBy(numberOfObjects)) yield
-        <div class={genClassTags(s)}><span><a href={toPrechacThisLink(s)}>{printSiteswap(s)}</a></span> <span class="num">{new DecimalFormat("#.#").format(numberOfObjects(s).toFloat / 2.0)}</span> <span>{mkname(s)}</span></div>)}</p>
+      h ++ <div class="p">{(for (s <- sws.toList.sortBy(siteswapToInt).sortBy(numberOfObjects)) yield
+        <div class={genClassTags(s)}><span><a href={toPrechacThisLink(s)}>{printSiteswap(s)}</a></span> <span class="num">{new DecimalFormat("#.#").format(numberOfObjects(s).toFloat / 2.0)}</span> <span>{mkname(s)}</span></div>)}</div>
     }).flatten
   }
 
@@ -305,14 +236,18 @@ object SiteswapGenerator extends App {
     case x: Node => x
   }
 
+  println("load")
   val template = scala.xml.XML.loadFile("siteswaps_template.xhtml")
+  println("gen")
   val generated = <div>
     {genHtml(3) ++ genHtml(5) ++ genHtml(7)}
   </div>
 
+  println("render")
   val output = replace(template)(_.label == "siteswaps")(generated)
 
-  scala.xml.XML.save("siteswaps.xhtml", output, "UTF-8", true, DocType("html", PublicID("-//W3C//DTD XHTML 1.0 Strict//EN", "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"), Nil))
+  scala.xml.XML.save("siteswaps.xhtml", output, "UTF-8", true, DocType("html"))
+  println("done.")
 
 
 }

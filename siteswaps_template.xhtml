@@ -1,60 +1,103 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
-
-
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Compatible siteswaps</title><style type="text/css">
-			.num { font-size: 60% }
-			a:visited, a:link, a:active {    text-decoration: none;}
-			#nopatterns p {  -webkit-column-count: 3;    -moz-column-count: 3;}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="HandheldFriendly" content="true"/>
+    <title>Compatible siteswaps</title>
+    <style>
+.num { font-size: 60% }
+a:visited, a:link, a:active {    text-decoration: none;}
 @media print {
-	BODY {font-size: 10pt; line-height: 120%; background: white; }
-	#patterns p { -webkit-column-count: 2;    -moz-column-count: 2;}
-	#pubfilter { display:none }
+    BODY {font-size: 10pt; line-height: 120%; background: white; }
+    #patterns .p { -webkit-column-count: 2;    -moz-column-count: 2;}
+    #pubfilter { display:none }
+}
+    </style>
+    <script>
+        
+function has(el, className) {
+    if (el.classList)
+        return el.classList.contains(className);
+    else
+        return new RegExp('(^| )' + className + '( |$)', 'gi').test(el.className);
 }
 
-			
-		</style>
+function updatepub(){
+    var throws = ['h2', 'h4', 'h5', 'h6', 'h7', 'h8', 'h9', 'ha', 'dr']
+    var req = []
+    var exl = []
+    for (const t of throws) {
+        if (document.getElementById(t).checked)
+            exl.push(t)
+        if (document.getElementById("r"+t).checked)
+            req.push(t)
+    }
 
-	<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
-	<script type="text/javascript" src="js/siteswaps.js"></script>
+    for (const sw of document.querySelectorAll(".sw")) {
+        var visible = ''
+        for (const r of req)
+            if (!has(sw, r)) 
+                visible = 'none'
+        for (const e of exl)
+            if (has(sw, e)) 
+                visible = 'none'
+        sw.style.display = visible
+    }
+};
+
+function init() {
+    for (const ip of document.querySelectorAll("#pubfilter input")) {
+        ip.checked = false
+        ip.addEventListener("change", updatepub);
+    }
+    document.getElementById("pubfilter").style.display=''
+}   
+
+    </script>
 
 
-</head><body>
-		<h1>Compatible Siteswaps</h1>
-		<p>The following lists four-handed siteswaps by compatibility. 
-		For example, every <em>pss</em> pattern can be combined with every other <em>pss</em> pattern, every <em>pppps</em> pattern can feed two jugglers juggling a <em>pspss</em> pattern each or one juggler juggling a <em>pssss</em> pattern as 5-count popcorn and another juggling a <em>ppsps</em> pattern as funky bookends. The small number indicates the number of clubs per juggler. Links go to prechacthis, which explains starts, orbits, and so forth.</p>
-		<p>The list is complete with all passing siteswaps with up to <em>a</em> throws, excluding siteswaps with empty hands and ones with two subsequent flips/holds.</p>
+</head>
+<body onload="init();">
+<h1>Compatible Siteswaps</h1>
+<p>The following lists four-handed siteswaps by compatibility.
+    For example, every <em>pss</em> pattern can be combined with every other <em>pss</em> pattern, every <em>pppps</em>
+    pattern can feed two jugglers juggling a <em>pspss</em> pattern each or one juggler juggling a <em>pssss</em>
+    pattern as 5-count popcorn and another juggling a <em>ppsps</em> pattern as funky bookends. The small number
+    indicates the number of clubs per juggler. Links go to prechacthis, which explains starts, orbits, and so forth.</p>
+<p>The list is complete with all passing siteswaps with up to <em>a</em> throws, excluding siteswaps with empty hands
+    and ones with two subsequent flips/holds.</p>
 
 
-		<div id="pubfilter" style="display:none">
-			<form action="javascript:updatepub()" method="post">Exclude:
-				<input type="checkbox" id="h2" checked=""/><label for="h2">Zip</label>
-				<input type="checkbox" id="h4" checked=""/><label for="h4">Flip</label>
-				<input type="checkbox" id="h5" checked=""/><label for="h5">Zap</label>
-				<input type="checkbox" id="h6" checked=""/><label for="h6">Self</label>
-				<input type="checkbox" id="h7" checked=""/><label for="h7">Single pass</label>
-				<input type="checkbox" id="h8" checked=""/><label for="h8">Heff</label>
-				<input type="checkbox" id="h9" checked=""/><label for="h9">Double pass</label>
-				<input type="checkbox" id="ha" checked=""/><label for="ha">Triple</label>
-				<input type="checkbox" id="dr" checked=""/><label for="dr">Dragon</label>
-			</form>
-			<form action="javascript:updatepub()" method="post">Require:
-				<input type="checkbox" id="rh2" checked=""/><label for="rh2">Zip</label>
-				<input type="checkbox" id="rh4" checked=""/><label for="rh4">Flip</label>
-				<input type="checkbox" id="rh5" checked=""/><label for="rh5">Zap</label>
-				<input type="checkbox" id="rh6" checked=""/><label for="rh6">Self</label>
-				<input type="checkbox" id="rh7" checked=""/><label for="rh7">Single pass</label>
-				<input type="checkbox" id="rh8" checked=""/><label for="rh8">Heff</label>
-				<input type="checkbox" id="rh9" checked=""/><label for="rh9">Double pass</label>
-				<input type="checkbox" id="rha" checked=""/><label for="rha">Triple</label>
-				<input type="checkbox" id="rdr" checked=""/><label for="rdr">Dragon</label>
-			</form>
-		</div>
-	<div id="patterns">
-
-      <siteswaps />
-		
+<div id="pubfilter" style="display:none">
+    <form action="javascript:updatepub()" method="post"><p>Exclude:
+        <input type="checkbox" id="h2"/><label for="h2">Zip</label>
+        <input type="checkbox" id="h4"/><label for="h4">Flip</label>
+        <input type="checkbox" id="h5"/><label for="h5">Zap</label>
+        <input type="checkbox" id="h6"/><label for="h6">Self</label>
+        <input type="checkbox" id="h7"/><label for="h7">Single pass</label>
+        <input type="checkbox" id="h8"/><label for="h8">Heff</label>
+        <input type="checkbox" id="h9"/><label for="h9">Double pass</label>
+        <input type="checkbox" id="ha"/><label for="ha">Triple</label>
+        <input type="checkbox" id="dr"/><label for="dr">Dragon</label>
+    </p>
+    </form>
+    <form action="javascript:updatepub()" method="post"><p>Require:
+        <input type="checkbox" id="rh2"/><label for="rh2">Zip</label>
+        <input type="checkbox" id="rh4"/><label for="rh4">Flip</label>
+        <input type="checkbox" id="rh5"/><label for="rh5">Zap</label>
+        <input type="checkbox" id="rh6"/><label for="rh6">Self</label>
+        <input type="checkbox" id="rh7"/><label for="rh7">Single pass</label>
+        <input type="checkbox" id="rh8"/><label for="rh8">Heff</label>
+        <input type="checkbox" id="rh9"/><label for="rh9">Double pass</label>
+        <input type="checkbox" id="rha"/><label for="rha">Triple</label>
+        <input type="checkbox" id="rdr"/><label for="rdr">Dragon</label>
+    </p>
+    </form>
 </div>
-		<p>Generated by <a href="https://www.cs.cmu.edu/~ckaestne/">Christian K&auml;stner</a></p></body></html>
+<div id="patterns">
+
+    <siteswaps/>
+
+</div>
+<p>Generated by <a href="https://www.cs.cmu.edu/~ckaestne/">Christian Kästner</a></p></body>
+</html>
