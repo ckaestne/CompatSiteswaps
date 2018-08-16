@@ -77,4 +77,8 @@ a2747 aa7 Warmup Pattern
 5888222 Heffalot
 9522458 5 club pattern you cannot do #1
 5726258 5 club pattern you cannot do #2
-97522 5 club pattern you cannot do #3
+97522 Dragonfly
+8672255 Uwe Pattern
+9794884 James' special day
+b7575 Ark of the Covenant
+d757575 Temple of Doom
