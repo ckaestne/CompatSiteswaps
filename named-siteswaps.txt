@@ -6,7 +6,7 @@
 867 French 3 count
 966 7 club three count
 756 baby dragon; zap opus 1; holy hand-grenade
-945 dragon; black beast of aaaarg...
+945 dragons; black beast of aaaarg...
 996 8 club pps
 7 7 club one count
 777 7 club one count
@@ -85,3 +85,6 @@ d757575 Temple of Doom
 95524 Dragon cat
 64555 Funky magazine rack
 966777777 Double BANANA
+7525844 Flip vergessen
+7727788289247 Missing elevator button
+96677 Funky bookend friend
