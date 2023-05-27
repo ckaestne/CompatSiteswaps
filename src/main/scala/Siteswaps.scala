@@ -128,6 +128,8 @@ object Siteswaps {
         case 10 => "5,0,5"
       }).map("p(" + _ + ")").mkString(",") + "]&persons=2"
 
+  def toPassistLink(seq: List[Int]): String =
+    "https://passist.org/siteswap/"+seq.mkString+"?jugglers=2"
 
 }
 
@@ -224,7 +226,7 @@ object SiteswapGenerator extends App {
     (for ((interface, sws) <- sw.groupBy(getNormalizedInterface).toList.sortWith(sortInterfaces).reverse) yield {
       val h = <h2>{interface}</h2>
       h ++ <div class="p">{(for (s <- sws.toList.sortBy(siteswapToInt).sortBy(numberOfObjects)) yield
-        <div class={genClassTags(s)}><span><a href={toPrechacThisLink(s)}>{printSiteswap(s)}</a></span> <span class="num">{new DecimalFormat("#.#").format(numberOfObjects(s).toFloat / 2.0)}</span> <span>{mkname(s)}</span></div>)}</div>
+        <div class={genClassTags(s)}><span><a href={toPassistLink(s)}>{printSiteswap(s)}</a></span> <span class="num">{new DecimalFormat("#.#").format(numberOfObjects(s).toFloat / 2.0)}</span> <span>{mkname(s)}</span></div>)}</div>
     }).flatten
   }
 
