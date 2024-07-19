@@ -64,7 +64,7 @@ object Siteswaps {
   private def genSiteswaps(len: Int): List[List[Int]] = if (len == 0) List(Nil)
   else {
     for (sw <- genSiteswaps(len - 1);
-         t <- Set(2, 4, 5, 6, 7, 8, 9, 10))
+         t <- Set(2, 4, 5, 6, 7, 8, 9, 10, 11))
     yield t :: sw
   }
 
@@ -74,7 +74,7 @@ object Siteswaps {
     toLocal(seq).map(s => if (s % 2 == 0) (s / 2) else (s / 2) + ".5p").mkString(" ")
 
   def printSiteswap(seq: List[Int]): String =
-    seq.map(s => if (s == 10) "a" else s.toString).mkString("")
+    seq.map(s => if (s == 10) "a" else if (s == 11) "b" else s.toString).mkString("")
 
   def getInterface(seq: List[Int]): String = {
     val len = seq.size
@@ -111,7 +111,8 @@ object Siteswaps {
       case 7 => "pass"
       case 8 => "heff"
       case 9 => "double"
-      case 10 => "triple"
+      case 10 => "trelf"
+      case 11 => "triple"
     }).mkString(" ")
 
   def toPrechacThisLink(seq: List[Int]): String =
@@ -126,10 +127,18 @@ object Siteswaps {
         case 8 => "4,0,4"
         case 9 => "4.5,1," + ((seq.length + 1) / 2 + 4)
         case 10 => "5,0,5"
+        case 11 => ???
       }).map("p(" + _ + ")").mkString(",") + "]&persons=2"
 
+  def toSiteswapStr(seq: List[Int]): String =
+    seq.map({
+      case 10 => "a"
+      case 11 => "b"
+      case x => x.toString
+    }).mkString
+
   def toPassistLink(seq: List[Int]): String =
-    "https://passist.org/siteswap/"+seq.mkString+"?jugglers=2"
+    "https://passist.org/siteswap/"+toSiteswapStr(seq)+"?jugglers=2"
 
 }
 
@@ -216,6 +225,7 @@ object SiteswapGenerator extends App {
     if (s contains 8) tags ::= "h8"
     if (s contains 9) tags ::= "h9"
     if (s contains 10) tags ::= "ha"
+    if (s contains 11) tags ::= "hb"
     if (toLocal(s) containsSlice List(9, 5)) tags ::= "dr"
 
     tags.mkString(" ")
