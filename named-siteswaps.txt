@@ -91,3 +91,9 @@ d757575 Temple of Doom
 7284554 The forgotten flip
 99494 Peanut Flips
 9969968 Ollerup
+7777786 Mojito
+7777966 Caipirinha
+9797926 Moscow Mule
+9969727 Baco (Cuba Libre)
+9697882 Espresso Martini
+979a626 Tequila Sunrise
