@@ -30,9 +30,9 @@ object Siteswaps {
   }
 
   //gen number for sorting
-  def siteswapToInt(seq: List[Int]) = {
-    var r = 0
-    var m = 1
+  def siteswapToInt(seq: List[Int]): Long = {
+    var r: Long = 0
+    var m: Long = 1
     for (v <- seq.reverse) {
       r += m * (v - 1)
       m *= 100
