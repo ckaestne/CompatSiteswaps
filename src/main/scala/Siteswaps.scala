@@ -35,7 +35,7 @@ object Siteswaps {
     var m = 1
     for (v <- seq.reverse) {
       r += m * (v - 1)
-      m *= 10
+      m *= 100
     }
     r
   }
@@ -51,7 +51,7 @@ object Siteswaps {
     //holds are boring
     if (seq contains 0) return true
     //no passing? seriously
-    if (!(seq contains 5) && !(seq contains 7) && !(seq contains 9)) return true
+    if (!(seq contains 5) && !(seq contains 7) && !(seq contains 9) && !(seq contains 11)) return true
     //flip-flip is boring
     if ((toLocal(seq) ++ toLocal(seq)) containsSlice List(4, 4)) return true
     false
@@ -150,7 +150,7 @@ object NamedSiteswaps {
 
   def parse(line: String): (List[Int], String) = {
     val (sw, text) = line.splitAt(line.indexOf(" "))
-    (normalizeSiteswap(sw.map(c => if (c == 'a') 10 else c.asDigit).toList), text.trim)
+    (normalizeSiteswap(sw.map(c => if (c == 'a') 10 else if (c == 'b') 11 else c.asDigit).toList), text.trim)
   }
 
   val namedSiteswaps = data.filterNot(_.trim.isEmpty).map(parse).toMap
@@ -177,6 +177,7 @@ class SiteswapTests extends App {
   checkSiteswap(9, 7, 5)
   checkSiteswap(8, 6, 8, 6, 7)
   checkSiteswap(7, 2, 2, 2, 2)
+  checkSiteswap(11, 6, 4)
   invalidSiteswap(5, 8)
   assert(isBoring(List(6, 4, 6, 4, 5)))
   assert(!isBoring(List(9, 5, 8, 4, 4)))
