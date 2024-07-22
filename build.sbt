@@ -1,4 +1,4 @@
-name := "sitewap"
+name := "siteswap"
 
 version := "1.0"
 
