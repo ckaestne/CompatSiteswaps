@@ -88,7 +88,6 @@ d757575 Temple of Doom
 7525844 Flip vergessen
 7727788289247 Missing elevator button
 96677 Funky bookend friend
-7284554 The forgotten flip
 99494 Peanut Flips
 9969968 Ollerup
 7777786 Mojito
